@@ -1,0 +1,33 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# ---- Node / Angular ----
+node_modules/
+dist/
+.angular/
+coverage/
+*.log
+
+# ---- Secretos y configuración local ----
+.env
+.env.*
+!.env.example
+*.pem
+*service-account*.json
+.firebaserc
+.firebase/
+
+# ---- IDE / SO ----
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
