@@ -1,0 +1,16 @@
+<dialog #dialog class="dialog" aria-labelledby="confirm-title" aria-describedby="confirm-message" (close)="onClose()">
+  @if (options(); as o) {
+    <form method="dialog">
+      <h2 id="confirm-title">{{ o.title }}</h2>
+      <p id="confirm-message">{{ o.message }}</p>
+      <div class="actions">
+        <button type="submit" value="cancel" class="btn btn--ghost" autofocus>
+          {{ o.cancelLabel ?? 'Cancelar' }}
+        </button>
+        <button type="submit" value="confirm" class="btn" [class.btn--danger]="o.tone === 'danger'" [class.btn--primary]="o.tone !== 'danger'">
+          {{ o.confirmLabel }}
+        </button>
+      </div>
+    </form>
+  }
+</dialog>

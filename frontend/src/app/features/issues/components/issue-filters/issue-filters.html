@@ -1,0 +1,25 @@
+<form class="filters" [formGroup]="form" role="search" aria-label="Filtrar incidencias">
+  <div class="field">
+    <label class="field__label" for="filter-status">Estado</label>
+    <select id="filter-status" class="select" formControlName="status">
+      <option [ngValue]="null">Todos</option>
+      @for (s of statuses; track s) {
+        <option [ngValue]="s">{{ statusLabels[s] }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="filter-priority">Prioridad</label>
+    <select id="filter-priority" class="select" formControlName="priority">
+      <option [ngValue]="null">Todas</option>
+      @for (p of priorities; track p) {
+        <option [ngValue]="p">{{ priorityLabels[p] }}</option>
+      }
+    </select>
+  </div>
+
+  @if (hasFilters()) {
+    <button type="button" class="btn btn--link clear" (click)="clear()">Quitar filtros</button>
+  }
+</form>

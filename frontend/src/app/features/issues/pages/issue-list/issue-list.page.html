@@ -1,0 +1,117 @@
+<div class="page">
+  @if (store.summary(); as summary) {
+    <app-summary-bar
+      [summary]="summary"
+      [activeStatus]="store.filters().status"
+      (statusToggled)="onStatusToggled($event)"
+    />
+  }
+
+  <div class="toolbar">
+    <app-issue-filters [filters]="store.filters()" (filtersChange)="onFiltersChange($event)" />
+    <a class="btn btn--primary" routerLink="new">Nueva incidencia</a>
+  </div>
+
+  @if (store.error(); as error) {
+    <div class="alert" role="alert">
+      <span>{{ error }}</span>
+      <button type="button" class="btn btn--link" (click)="store.load()">Reintentar</button>
+    </div>
+  }
+
+  <section class="list" aria-labelledby="list-title" [attr.aria-busy]="store.loading()">
+    <h2 id="list-title" class="visually-hidden">Listado de incidencias</h2>
+
+    @if (store.loading() && store.issues().length === 0) {
+      <p class="empty">Cargando incidencias…</p>
+    } @else {
+      @for (issue of store.issues(); track issue.id) {
+        <article class="row" [class.is-pending]="store.isPending(issue.id)" [attr.data-status]="issue.status">
+          <div class="row__main">
+            <h3 class="row__title">{{ issue.title }}</h3>
+            @if (issue.description) {
+              <p class="row__desc">{{ issue.description }}</p>
+            }
+            <p class="row__meta">
+              Registrada por <strong>{{ issue.created_by }}</strong>
+              el <time [attr.datetime]="issue.created_at">{{ issue.created_at | date: 'd MMM y, HH:mm' }}</time>
+            </p>
+          </div>
+
+          <div class="row__controls">
+            <label class="control">
+              <span class="control__label">Prioridad</span>
+              <span class="control__input">
+                <app-priority-meter [priority]="issue.priority" />
+                <select
+                  class="select"
+                  [value]="issue.priority"
+                  [disabled]="store.isPending(issue.id) || isLocked(issue)"
+                  (change)="changePriority(issue, $event)"
+                >
+                  @for (p of priorities; track p) {
+                    <option [value]="p" [selected]="p === issue.priority">{{ priorityLabels[p] }}</option>
+                  }
+                </select>
+              </span>
+            </label>
+
+            <label class="control">
+              <span class="control__label">Estado</span>
+              <select
+                class="select status-select"
+                [value]="issue.status"
+                [disabled]="store.isPending(issue.id) || isLocked(issue)"
+                [attr.title]="isLocked(issue) ? 'Solo Administrador o Soporte pueden modificar una incidencia completada' : null"
+                (change)="changeStatus(issue, $event)"
+              >
+                @for (s of statuses; track s) {
+                  <option
+                    [value]="s"
+                    [selected]="s === issue.status"
+                    [disabled]="isStatusOptionDisabled(s, issue)"
+                  >{{ statusLabels[s] }}</option>
+                }
+              </select>
+            </label>
+
+            @if (canResolve || canDelete) {
+              <div class="row__actions" role="group" [attr.aria-label]="'Acciones para ' + issue.title">
+                @if (canResolve && issue.status !== 'completed') {
+                  <button
+                    type="button"
+                    class="btn btn--sm btn--resolve"
+                    [disabled]="store.isPending(issue.id)"
+                    (click)="resolve(issue)"
+                  >Resolver</button>
+                }
+                @if (canDelete) {
+                  <button
+                    type="button"
+                    class="btn btn--sm btn--quiet-danger"
+                    [disabled]="store.isPending(issue.id)"
+                    (click)="remove(issue)"
+                  >Eliminar</button>
+                }
+              </div>
+            }
+          </div>
+        </article>
+      } @empty {
+        @if (store.hasActiveFilters()) {
+          <div class="empty">
+            <p>Ninguna incidencia coincide con los filtros seleccionados.</p>
+            <button type="button" class="btn btn--ghost" (click)="clearFilters()">Quitar filtros</button>
+          </div>
+        } @else if (!store.error()) {
+          <div class="empty">
+            <p>Aún no hay incidencias registradas.</p>
+            <a class="btn btn--primary" routerLink="new">Registrar la primera incidencia</a>
+          </div>
+        }
+      }
+    }
+  </section>
+</div>
+
+<app-confirm-dialog />

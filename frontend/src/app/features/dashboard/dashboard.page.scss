@@ -1,0 +1,304 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+
+  h1 {
+    font-size: 1.75rem;
+  }
+}
+
+.head__lead {
+  margin: var(--space-1) 0 0;
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-5);
+}
+
+.card {
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+
+  h2 {
+    font-size: 1rem;
+  }
+}
+
+.card--wide {
+  grid-column: 1 / -1;
+}
+
+.card__hint {
+  margin: var(--space-1) 0 0;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+/* ---------- Colores por estado (relleno, trazo y fondo) ---------- */
+.seg--open { stroke: var(--status-open); }
+.seg--in_progress { stroke: var(--status-in_progress); }
+.seg--completed { stroke: var(--status-completed); }
+.fill--open { fill: var(--status-open); }
+.fill--in_progress { fill: var(--status-in_progress); }
+.fill--completed { fill: var(--status-completed); }
+.bg--open { background: var(--status-open); }
+.bg--in_progress { background: var(--status-in_progress); }
+.bg--completed { background: var(--status-completed); }
+
+/* ---------- Anillo ---------- */
+.donut {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5);
+  margin-top: var(--space-4);
+}
+
+.donut__chart {
+  width: min(100%, 13rem);
+  flex-shrink: 0;
+}
+
+.donut__track {
+  fill: none;
+  stroke: var(--paper);
+  stroke-width: 26;
+}
+
+.donut__seg {
+  fill: none;
+  stroke-width: 26;
+}
+
+.donut__total {
+  text-anchor: middle;
+  font-size: 2.5rem;
+  font-weight: 700;
+  fill: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.donut__caption {
+  text-anchor: middle;
+  font-size: 0.8rem;
+  fill: var(--muted);
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend__row {
+  display: grid;
+  grid-template-columns: 0.75rem 2.5rem auto auto;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.legend__swatch {
+  align-self: center;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 2px;
+}
+
+.legend__count {
+  font-weight: 700;
+  font-size: 1.125rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.legend__percent {
+  padding-left: var(--space-2);
+  border-left: 1px solid var(--line-strong);
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Pareto ---------- */
+.pareto {
+  display: block;
+  width: 100%;
+  margin-top: var(--space-3);
+  overflow: visible;
+}
+
+.axis {
+  stroke: var(--line-strong);
+}
+
+.ref80 {
+  stroke: var(--muted);
+  stroke-dasharray: 4 4;
+  opacity: 0.6;
+}
+
+.tick {
+  font-size: 10px;
+  fill: var(--muted);
+}
+
+.tick--left {
+  text-anchor: end;
+}
+
+.bar__value {
+  text-anchor: middle;
+  font-size: 12px;
+  font-weight: 700;
+  fill: var(--ink);
+}
+
+.bar__label {
+  text-anchor: middle;
+  font-size: 11px;
+  fill: var(--ink-soft);
+}
+
+.cumulative {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.cumulative__dot {
+  fill: var(--surface);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+/* Halo del color de la tarjeta: legible aunque la etiqueta caiga sobre una barra. */
+.cumulative__value {
+  font-size: 10px;
+  font-weight: 700;
+  fill: var(--ink);
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+/* ---------- Carga por prioridad ---------- */
+.prio {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 var(--space-5);
+  padding: 0;
+  list-style: none;
+}
+
+.prio__row {
+  display: grid;
+  grid-template-columns: 4rem 1fr 2.5rem;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.prio__label {
+  font-weight: 600;
+}
+
+.prio__track {
+  height: 1.25rem;
+  background: var(--paper);
+  border-radius: 2px;
+}
+
+.prio__bar {
+  display: flex;
+  gap: 2px;
+  height: 100%;
+  transition: width 240ms ease;
+}
+
+.prio__seg {
+  min-width: 4px;
+  border-radius: 2px;
+}
+
+.prio__total {
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Tabla ---------- */
+.table-wrap {
+  overflow-x: auto;
+}
+
+.matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+
+  th,
+  td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--line);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  th:first-child {
+    text-align: left;
+  }
+
+  thead th {
+    font-size: 0.8125rem;
+    color: var(--muted);
+  }
+
+  tfoot th,
+  tfoot td,
+  .matrix__total {
+    font-weight: 700;
+  }
+
+  tfoot th,
+  tfoot td {
+    border-bottom: 0;
+    border-top: 2px solid var(--line-strong);
+  }
+}
+
+.dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: var(--space-2);
+  border-radius: 2px;
+}
+
+.empty {
+  color: var(--muted);
+}
+
+@media (max-width: 860px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr); /* evita que la tabla ensanche la página */
+  }
+}

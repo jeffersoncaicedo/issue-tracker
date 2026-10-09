@@ -1,0 +1,51 @@
+:host {
+  display: block;
+}
+
+.login {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: var(--space-5);
+}
+
+.panel {
+  width: min(100%, 24rem);
+  padding: var(--space-6);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-m);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.panel__logo {
+  display: block;
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+h1 {
+  font-size: 1.5rem;
+}
+
+.panel__lead {
+  margin: 0;
+  color: var(--muted);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.alert {
+  margin: 0;
+}
+
+.submit {
+  width: 100%;
+  margin-top: var(--space-2);
+}

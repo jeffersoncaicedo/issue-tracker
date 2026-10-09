@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Incidencias">
+  <!-- Propuesta C · "Ciclo": anillo con los tres estados y la marca de resuelto al centro -->
+  <style>.check{stroke:#16212c}@media (prefers-color-scheme:dark){.check{stroke:#e6ebf0}}</style>
+  <g fill="none" stroke-width="9" transform="rotate(-90 32 32)">
+    <circle cx="32" cy="32" r="23" stroke="#c2620f" stroke-dasharray="42.2 102.3"/>
+    <circle cx="32" cy="32" r="23" stroke="#4553c4" stroke-dasharray="42.2 102.3" stroke-dashoffset="-48.2"/>
+    <circle cx="32" cy="32" r="23" stroke="#1b8a55" stroke-dasharray="42.2 102.3" stroke-dashoffset="-96.4"/>
+  </g>
+  <path class="check" d="M22.5 32.5l6.5 6.5 12.5-14" fill="none" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

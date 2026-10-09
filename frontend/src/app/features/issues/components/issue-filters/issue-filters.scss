@@ -1,0 +1,15 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-4);
+}
+
+.field {
+  min-width: 10rem;
+}
+
+.clear {
+  align-self: center;
+  margin-top: var(--space-5);
+}

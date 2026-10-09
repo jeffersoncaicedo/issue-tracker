@@ -1,0 +1,44 @@
+<section class="summary" aria-labelledby="summary-title">
+  <div class="summary__total">
+    <span class="summary__number">{{ summary().total }}</span>
+    <h2 id="summary-title" class="summary__caption">
+      {{ summary().total === 1 ? 'incidencia registrada' : 'incidencias registradas' }}
+    </h2>
+  </div>
+
+  <div class="bar" role="img" aria-label="Distribución de incidencias por estado">
+    @for (seg of segments(); track seg.status) {
+      @if (seg.count > 0) {
+        <span
+          class="bar__segment"
+          [class]="'status-' + seg.status"
+          [style.flex-grow]="seg.count"
+          [class.is-dimmed]="activeStatus() !== null && activeStatus() !== seg.status"
+        ></span>
+      }
+    }
+    @if (summary().total === 0) {
+      <span class="bar__segment bar__segment--empty"></span>
+    }
+  </div>
+
+  <ul class="legend">
+    @for (seg of segments(); track seg.status) {
+      <li>
+        <button
+          type="button"
+          class="legend__item"
+          [class]="'status-' + seg.status"
+          [attr.aria-pressed]="activeStatus() === seg.status"
+          [attr.aria-label]="seg.label + ': ' + seg.count + '. ' + (activeStatus() === seg.status ? 'Quitar filtro' : 'Filtrar por este estado')"
+          (click)="toggle(seg.status)"
+        >
+          <span class="legend__swatch" aria-hidden="true"></span>
+          <span class="legend__count">{{ seg.count }}</span>
+          <span class="legend__label">{{ seg.label }}</span>
+          <span class="legend__percent">{{ seg.percent }} %</span>
+        </button>
+      </li>
+    }
+  </ul>
+</section>

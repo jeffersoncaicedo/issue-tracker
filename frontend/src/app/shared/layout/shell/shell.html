@@ -1,0 +1,41 @@
+<header class="topbar">
+  <div class="topbar__left">
+    <a class="brand" routerLink="/issues" aria-label="Incidencias, ir al listado">
+      <img class="brand__logo" src="brand/logo.svg" alt="" width="28" height="28" />
+      <span class="brand__name">Incidencias</span>
+    </a>
+
+    <nav class="nav" aria-label="Secciones">
+      <a
+        class="nav__link"
+        routerLink="/issues"
+        routerLinkActive="is-active"
+        ariaCurrentWhenActive="page"
+      >Listado</a>
+      @if (auth.can('stats:view')) {
+        <a
+          class="nav__link"
+          routerLink="/dashboard"
+          routerLinkActive="is-active"
+          ariaCurrentWhenActive="page"
+        >Resumen</a>
+      }
+    </nav>
+  </div>
+
+  @if (auth.user(); as user) {
+    <div class="session">
+      <span class="session__user">
+        <span class="session__name">{{ user.full_name }}</span>
+        <span class="session__handle">{{ roleLabels[user.role] }}</span>
+      </span>
+      <button type="button" class="btn btn--ghost" (click)="logout()" [disabled]="loggingOut()">
+        {{ loggingOut() ? 'Cerrando sesión…' : 'Cerrar sesión' }}
+      </button>
+    </div>
+  }
+</header>
+
+<main class="content">
+  <router-outlet />
+</main>

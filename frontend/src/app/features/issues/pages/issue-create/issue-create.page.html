@@ -1,0 +1,61 @@
+<section class="create" aria-labelledby="create-title">
+  <a class="back" routerLink="/issues">Volver al listado</a>
+  <h1 id="create-title">Nueva incidencia</h1>
+  <p class="lead">Describa el problema con el detalle suficiente para que otra persona pueda atenderlo.</p>
+
+  @if (errorMessage(); as message) {
+    <p class="alert" role="alert">{{ message }}</p>
+  }
+
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="field">
+      <label class="field__label" for="title">Título</label>
+      <input
+        id="title"
+        class="input"
+        type="text"
+        formControlName="title"
+        [attr.maxlength]="limits.TITLE_MAX"
+        [attr.aria-invalid]="showError('title')"
+        aria-describedby="title-error"
+      />
+      @if (showError('title')) {
+        <span id="title-error" class="field__error">{{ titleError() }}</span>
+      }
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="description">Descripción</label>
+      <textarea
+        id="description"
+        class="textarea"
+        formControlName="description"
+        [attr.maxlength]="limits.DESCRIPTION_MAX"
+        aria-describedby="description-hint"
+      ></textarea>
+      <span id="description-hint" class="field__hint">
+        Opcional · {{ form.controls.description.value.length }} de {{ limits.DESCRIPTION_MAX }} caracteres
+      </span>
+    </div>
+
+    <fieldset class="field priority">
+      <legend class="field__label">Prioridad</legend>
+      <div class="priority__options">
+        @for (p of priorities; track p) {
+          <label class="priority__option">
+            <input type="radio" name="priority" formControlName="priority" [value]="p" [attr.value]="p" />
+            <app-priority-meter [priority]="p" />
+            <span>{{ priorityLabels[p] }}</span>
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    <div class="actions">
+      <button type="submit" class="btn btn--primary" [disabled]="submitting()">
+        {{ submitting() ? 'Registrando…' : 'Registrar incidencia' }}
+      </button>
+      <a class="btn btn--ghost" routerLink="/issues">Cancelar</a>
+    </div>
+  </form>
+</section>

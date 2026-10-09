@@ -1,0 +1,159 @@
+<div class="page">
+  <header class="head">
+    <div>
+      <h1>Resumen de incidencias</h1>
+      @if (stats(); as s) {
+        <p class="head__lead">
+          {{ s.total }} en total, {{ pending() }} sin resolver.
+          @if (pendingHigh() === 1) {
+            Una de ellas es de prioridad alta.
+          } @else if (pendingHigh() > 1) {
+            {{ pendingHigh() }} de ellas son de prioridad alta.
+          } @else if (pending() > 0) {
+            Ninguna pendiente es de prioridad alta.
+          }
+        </p>
+      }
+    </div>
+    <button type="button" class="btn btn--ghost" (click)="load()" [disabled]="loading()">
+      {{ loading() ? 'Actualizando…' : 'Actualizar' }}
+    </button>
+  </header>
+
+  @if (error(); as message) {
+    <div class="alert" role="alert">
+      <span>{{ message }}</span>
+      <button type="button" class="btn btn--link" (click)="load()">Reintentar</button>
+    </div>
+  }
+
+  @if (stats(); as s) {
+    <div class="grid">
+      <!-- ============ Anillo: distribución por estado ============ -->
+      <section class="card" aria-labelledby="donut-title">
+        <h2 id="donut-title">Distribución por estado</h2>
+        <div class="donut">
+          <svg viewBox="0 0 200 200" class="donut__chart" role="img"
+               [attr.aria-label]="'Gráfico de anillo: ' + s.by_status.open + ' abiertas, ' + s.by_status.in_progress + ' en progreso, ' + s.by_status.completed + ' completadas'">
+            <circle cx="100" cy="100" [attr.r]="radius" class="donut__track" />
+            <g transform="rotate(-90 100 100)">
+              @for (seg of donut(); track seg.status) {
+                <circle cx="100" cy="100" [attr.r]="radius"
+                        [attr.class]="'donut__seg seg--' + seg.status"
+                        [attr.stroke-dasharray]="seg.dashArray"
+                        [attr.stroke-dashoffset]="seg.dashOffset" />
+              }
+            </g>
+            <text x="100" y="98" class="donut__total">{{ s.total }}</text>
+            <text x="100" y="122" class="donut__caption">{{ s.total === 1 ? 'incidencia' : 'incidencias' }}</text>
+          </svg>
+
+          <ul class="legend">
+            @for (st of statuses; track st) {
+              <li class="legend__row">
+                <span [class]="'legend__swatch bg--' + st" aria-hidden="true"></span>
+                <span class="legend__count">{{ s.by_status[st] }}</span>
+                <span class="legend__label">{{ statusLabels[st] }}</span>
+                <span class="legend__percent">{{ percentOf(s.by_status[st], s.total) }} %</span>
+              </li>
+            }
+          </ul>
+        </div>
+      </section>
+
+      <!-- ============ Pareto por estado ============ -->
+      @if (pareto(); as p) {
+        <section class="card" aria-labelledby="pareto-title">
+          <h2 id="pareto-title">Pareto por estado</h2>
+          <p class="card__hint">Barras: cantidad (de mayor a menor). Línea: porcentaje acumulado.</p>
+          <svg [attr.viewBox]="'0 0 ' + box.width + ' ' + box.height" class="pareto" role="img"
+               aria-label="Diagrama de Pareto de incidencias por estado">
+            <!-- Ejes -->
+            <line class="axis" [attr.x1]="box.left" [attr.x2]="box.width - box.right"
+                  [attr.y1]="box.height - box.bottom" [attr.y2]="box.height - box.bottom" />
+            <text class="tick tick--right" [attr.x]="box.width - box.right + 6" [attr.y]="box.top + 4">100 %</text>
+            <text class="tick tick--right" [attr.x]="box.width - box.right + 6" [attr.y]="p.y80 + 4">80 %</text>
+            <text class="tick tick--left" [attr.x]="box.left - 6" [attr.y]="box.top + 4">{{ p.maxCount }}</text>
+            <text class="tick tick--left" [attr.x]="box.left - 6" [attr.y]="box.height - box.bottom">0</text>
+            <!-- Referencia del 80 % -->
+            <line class="ref80" [attr.x1]="box.left" [attr.x2]="box.width - box.right"
+                  [attr.y1]="p.y80" [attr.y2]="p.y80" />
+
+            @for (b of p.bars; track b.status) {
+              <rect [attr.class]="'fill--' + b.status" [attr.x]="b.x" [attr.y]="b.y"
+                    [attr.width]="b.width" [attr.height]="b.height" rx="2" />
+              <text class="bar__value" [attr.x]="b.pointX" [attr.y]="b.y - 6">{{ b.count }}</text>
+              <text class="bar__label" [attr.x]="b.pointX" [attr.y]="box.height - box.bottom + 18">{{ statusLabels[b.status] }}</text>
+            }
+
+            <polyline class="cumulative" [attr.points]="p.linePoints" />
+            @for (b of p.bars; track b.status) {
+              <circle class="cumulative__dot" [attr.cx]="b.pointX" [attr.cy]="b.pointY" r="3.5" />
+              <text class="cumulative__value" [attr.x]="b.pointX + 7" [attr.y]="b.pointY - 6">{{ b.cumulative }} %</text>
+            }
+          </svg>
+        </section>
+      }
+
+      <!-- ============ Carga por prioridad ============ -->
+      <section class="card card--wide" aria-labelledby="priority-title">
+        <h2 id="priority-title">Carga por prioridad</h2>
+        <p class="card__hint">Cada barra se divide según el estado de sus incidencias.</p>
+
+        <ul class="prio">
+          @for (row of priorityRows(); track row.priority) {
+            <li class="prio__row">
+              <span class="prio__label">{{ priorityLabels[row.priority] }}</span>
+              <span class="prio__track">
+                <span class="prio__bar" [style.width.%]="row.widthPercent">
+                  @for (seg of row.segments; track seg.status) {
+                    <span [class]="'prio__seg bg--' + seg.status" [style.flex-grow]="seg.count"
+                          [attr.title]="statusLabels[seg.status] + ': ' + seg.count"></span>
+                  }
+                </span>
+              </span>
+              <span class="prio__total">{{ row.total }}</span>
+            </li>
+          }
+        </ul>
+
+        <div class="table-wrap">
+          <table class="matrix">
+            <caption class="visually-hidden">Incidencias por prioridad y estado</caption>
+            <thead>
+              <tr>
+                <th scope="col">Prioridad</th>
+                @for (st of statuses; track st) {
+                  <th scope="col"><span [class]="'dot bg--' + st" aria-hidden="true"></span>{{ statusLabels[st] }}</th>
+                }
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (pr of priorities; track pr) {
+                <tr>
+                  <th scope="row">{{ priorityLabels[pr] }}</th>
+                  @for (st of statuses; track st) {
+                    <td>{{ s.matrix[st][pr] }}</td>
+                  }
+                  <td class="matrix__total">{{ s.by_priority[pr] }}</td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <th scope="row">Total</th>
+                @for (st of statuses; track st) {
+                  <td>{{ s.by_status[st] }}</td>
+                }
+                <td class="matrix__total">{{ s.total }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+    </div>
+  } @else if (loading()) {
+    <p class="empty">Cargando resumen…</p>
+  }
+</div>

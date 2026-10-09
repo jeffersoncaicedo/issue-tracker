@@ -1,0 +1,56 @@
+<main class="login">
+  <section class="panel" aria-labelledby="login-title">
+    <img class="panel__logo" src="brand/logo.svg" alt="" width="44" height="44" />
+    <h1 id="login-title">Iniciar sesión</h1>
+    <p class="panel__lead">Ingrese con su usuario para registrar y dar seguimiento a las incidencias.</p>
+
+    @if (reason() === 'expired') {
+      <p class="alert alert--info" role="status">Su sesión terminó. Inicie sesión nuevamente.</p>
+    }
+    @if (errorMessage(); as message) {
+      <p class="alert" role="alert">{{ message }}</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label class="field__label" for="username">Usuario</label>
+        <input
+          id="username"
+          class="input"
+          type="text"
+          formControlName="username"
+          autocomplete="username"
+          autocapitalize="none"
+          spellcheck="false"
+          [attr.aria-invalid]="showError('username')"
+          aria-describedby="username-error"
+        />
+        @if (showError('username')) {
+          <span id="username-error" class="field__error">
+            {{ form.controls.username.hasError('required') ? 'Ingrese su usuario.' : 'El usuario debe tener al menos 3 caracteres.' }}
+          </span>
+        }
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="password">Contraseña</label>
+        <input
+          id="password"
+          class="input"
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+          [attr.aria-invalid]="showError('password')"
+          aria-describedby="password-error"
+        />
+        @if (showError('password')) {
+          <span id="password-error" class="field__error">Ingrese su contraseña.</span>
+        }
+      </div>
+
+      <button type="submit" class="btn btn--primary submit" [disabled]="submitting()">
+        {{ submitting() ? 'Verificando…' : 'Iniciar sesión' }}
+      </button>
+    </form>
+  </section>
+</main>
