@@ -111,7 +111,7 @@ Los casos de aceptación de usuario sobre la interfaz están en [`../docs/UAT.md
   depender solo del color.
 - El resumen es interactivo: pulsar un estado filtra el listado y queda sincronizado con los selectores.
   La cantidad va **antes** del nombre del estado y el porcentaje al final, separado, para no confundirlos.
-- Ícono "Ciclo" (anillo de estados con check) en SVG adaptable a tema oscuro; ver `docs/brand/`.
+- Ícono "Ciclo" (anillo de estados con check) en SVG adaptable a tema oscuro.
 - Los gráficos son SVG propios (sin librería): ligeros, con colores del sistema de diseño y texto alternativo.
 - Accesible: etiquetas asociadas, `aria-invalid`, `role="alert"`, foco visible, `prefers-reduced-motion`
   y diseño responsivo hasta 360 px.
