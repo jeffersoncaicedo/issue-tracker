@@ -1,0 +1,35 @@
+[project]
+name = "issue-tracker-api"
+version = "1.0.0"
+description = "API REST de gestión de incidencias (Issue Tracker) con FastAPI + Firestore"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "-q --strict-markers"
+markers = [
+    "acceptance: pruebas de aceptación de usuario (escenarios de negocio end-to-end sobre la API)",
+]
+
+[tool.coverage.run]
+source = ["app"]
+omit = []
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "N", "SIM"]
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106"]
+"scripts/**" = ["S105", "S106"]
+"app/core/seed_data.py" = ["S105", "S106"]
